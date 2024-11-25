@@ -42,38 +42,44 @@ public class TileLoader : MonoBehaviour
 
     public Grid grid;
     public Tilemap tilemap;
-    private Tile EndTile;
-    private TileBase endTileBase;
-    private Tile floorTile;
-    private TileBase floorTileBase;
-    private Tile StartTile;
 
-    private TileBase startTileBase;
+    [SerializeField]
+    private TileBase floorTileBase;
+
+    private Tile EndTile;
+    private Tile floorTile;
+    private Tile MonsterTile;
+    private Tile RewardTile;
+    private Tile StartTile;
+    private Tile TrapTile;
     private Tile wallTile;
-    private TileBase wallTileBase;
 
     [Button]
     private void Awake()
     {
-        floorTile = new Tile();
-        wallTile = new Tile();
-        StartTile = new Tile();
-        EndTile = new Tile();
+        floorTile = ScriptableObject.CreateInstance<Tile>();
+        wallTile = ScriptableObject.CreateInstance<Tile>();
+        StartTile = ScriptableObject.CreateInstance<Tile>();
+        EndTile = ScriptableObject.CreateInstance<Tile>();
+        MonsterTile = ScriptableObject.CreateInstance<Tile>();
+        RewardTile = ScriptableObject.CreateInstance<Tile>();
+        TrapTile = ScriptableObject.CreateInstance<Tile>();
 
         wallPrefab.gameObject.transform.localScale = new Vector3(4, 16, 4);
         floorPrefab.gameObject.transform.localScale = new Vector3(4, 4, 4);
         startPrefab.gameObject.transform.localScale = new Vector3(4, 4, 4);
         endPrefab.gameObject.transform.localScale = new Vector3(4, 4, 4);
+        monsterPrefab.gameObject.transform.localScale = new Vector3(4, 4, 4);
+        rewardPrefab.gameObject.transform.localScale = new Vector3(4, 4, 4);
+        trapPrefab.gameObject.transform.localScale = new Vector3(4, 4, 4);
 
         floorTile.gameObject = floorPrefab;
         wallTile.gameObject = wallPrefab;
         StartTile.gameObject = startPrefab;
         EndTile.gameObject = endPrefab;
-
-        startTileBase = StartTile;
-        endTileBase = EndTile;
-        floorTileBase = floorTile;
-        wallTileBase = wallTile;
+        MonsterTile.gameObject = monsterPrefab;
+        RewardTile.gameObject = rewardPrefab;
+        TrapTile.gameObject = trapPrefab;
 
         foreach (var mazeJsonFile in mazeJsonFiles)
         {
@@ -100,6 +106,7 @@ public class TileLoader : MonoBehaviour
 
 
             LoadMaze(mazeJsonFile);
+            grid.gameObject.SetActive(false);
         }
     }
 
@@ -127,6 +134,7 @@ public class TileLoader : MonoBehaviour
             {
                 var position = new Vector3Int(x, y, 0);
                 tilemap.SetTile(position, floorTile);
+                // mazeData.Add(position, maze[y][x]);
             }
         }
 
@@ -150,25 +158,25 @@ public class TileLoader : MonoBehaviour
                     // Instantiate(floorPrefab, position, Quaternion.identity);
 
                     // 바닥에 몬스터, 보상, 트랩 등을 추가
-                    // if (cell.has_monster)
-                    // {
-                    //     var monster = Instantiate(monsterPrefab, position, Quaternion.identity);
-                    //     monster.name = $"Monster_Strength_{cell.monster_strength}";
-                    // }
-                    // if (cell.has_reward)
-                    // {
-                    //     var reward = Instantiate(rewardPrefab, position, Quaternion.identity);
-                    //     reward.name = $"Reward_Value_{cell.reward_value}";
-                    // }
-                    // if (cell.is_trap)
-                    // {
-                    //     Instantiate(trapPrefab, position, Quaternion.identity);
-                    // }
+                    if (cell.has_monster)
+                    {
+                        tilemap.SetTile(position, MonsterTile);
+
+                    }
+                    if (cell.has_reward)
+                    {
+                        tilemap.SetTile(position, RewardTile);
+                    }
+                    if (cell.is_trap)
+                    {
+                        tilemap.SetTile(position, TrapTile);
+                    }
 
                     // 시작점과 도착점
                     if (cell.is_start)
                     {
                         tilemap.SetTile(position, StartTile);
+                        // tilemap.GetTile(position).
                         // Instantiate(startPrefab, position, Quaternion.identity);s
                     }
                     if (cell.is_end)

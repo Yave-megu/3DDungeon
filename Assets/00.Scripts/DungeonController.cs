@@ -9,68 +9,59 @@ public class DungeonController : MonoBehaviour
     public GameObject player;
     public TMP_Text textMesh;
     public GameObject resultPopup;
+
+    private MovePlayerParty _movePlayerParty;
     private int currentStage;
 
-    private PlayerMove playerMove;
-
     private int postStage;
-    // private GameObject[] thisDungeons;
+    private GameObject[] thisDungeons;
 
     public GameObject Instance { get; set; }
 
     public void Awake()
     {
         Instance = gameObject;
+        thisDungeons = new GameObject[dungeons.Length];
         for (int i = 0; i < dungeons.Length; i++)
         {
-            dungeons[i].SetActive(false);
+            thisDungeons[i] = Instantiate(dungeons[i]);
+            thisDungeons[i].SetActive(false);
             if (i == 0)
             {
-                dungeons[i].SetActive(true);
+                thisDungeons[i].SetActive(true);
                 currentStage = i;
             }
         }
-        // textMesh = new TextMeshPro();
-        // resultText = new TextMeshPro();
-        textMesh.text = "Total Step: " + "0";
+
         resultPopup.SetActive(false);
-        // thisDungeons = new GameObject[dungeons.Length];
-        // thisDungeons[0] = Instantiate(dungeons[0]);
-        // thisDungeons[1] = Instantiate(dungeons[1]);
-        // thisDungeons[2] = Instantiate(dungeons[2]);
-        // thisDungeons[3] = Instantiate(dungeons[3]);
-        // thisDungeons[4] = Instantiate(dungeons[4]);
 
 
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
-        playerMove = player.GetComponent<PlayerMove>();
+        _movePlayerParty = player.GetComponent<MovePlayerParty>();
+        textMesh.text = "Total Step: " + _movePlayerParty.Stamina;
         PlayerPositionInitialize();
-        // thisDungeons[0].SetActive(true);
-        // thisDungeons[1].SetActive(false);
-        // thisDungeons[2].SetActive(false);
-        // thisDungeons[3].SetActive(false);
-        // thisDungeons[4].SetActive(false);
+
     }
 
     // Update is called once per frame
     private void Update()
     {
-        textMesh.text = "Total Step: " + playerMove.StepCount;
-        if (playerMove.EndTile)
+        textMesh.text = $"Stamina {_movePlayerParty.Stamina} / {_movePlayerParty.MaxStamina}";
+        if (_movePlayerParty.EndTile)
         {
             NextDungeon();
         }
-        if (playerMove.StartTile)
+        if (_movePlayerParty.StartTile)
         {
             PostDungeon();
         }
     }
     private void PlayerPositionInitialize()
     {
-        if (playerMove.StartTile is false && playerMove.EndTile is false)
+        if (_movePlayerParty.StartTile is false && _movePlayerParty.EndTile is false)
         {
             var inintPos = GameObject.FindWithTag("StartTile").transform.position;
             inintPos.y += 2;
@@ -78,37 +69,37 @@ public class DungeonController : MonoBehaviour
         }
 
 
-        if (playerMove.EndTile)
+        if (_movePlayerParty.EndTile)
         {
             var upInitPos = GameObject.FindWithTag("StartTile").transform.position;
             upInitPos.y += 2;
             player.transform.position = upInitPos;
         }
-        if (playerMove.StartTile)
+        if (_movePlayerParty.StartTile)
         {
             var downInitPos = GameObject.FindWithTag("EndTile").transform.position;
             downInitPos.y += 2;
             player.transform.position = downInitPos;
         }
-        playerMove.EndTile = false;
-        playerMove.StartTile = false;
+        _movePlayerParty.EndTile = false;
+        _movePlayerParty.StartTile = false;
     } // ReSharper disable Unity.PerformanceAnalysis
     [Button]
     private void NextDungeon()
     {
         currentStage++;
-        if (currentStage >= dungeons.Length)
+        if (currentStage >= thisDungeons.Length)
         {
-            currentStage = dungeons.Length - 1;
+            currentStage = thisDungeons.Length - 1;
             Debug.Log("마지막 층입니다");
-            playerMove.EndTile = false;
+            _movePlayerParty.EndTile = false;
             Time.timeScale = 0;
             resultPopup.gameObject.SetActive(true);
-            resultPopup.gameObject.GetComponentInChildren<TMP_Text>().text = "Total : " + playerMove.StepCount;
+            resultPopup.gameObject.GetComponentInChildren<TMP_Text>().text = "Total : " + _movePlayerParty.Stamina;
             return;
         }
-        dungeons[currentStage - 1].SetActive(false);
-        dungeons[currentStage].SetActive(true);
+        thisDungeons[currentStage - 1].SetActive(false);
+        thisDungeons[currentStage].SetActive(true);
         PlayerPositionInitialize();
         // postStage = currentStage;
         // currentStage = nextStage;
@@ -131,11 +122,11 @@ public class DungeonController : MonoBehaviour
         {
             currentStage = 0;
             Debug.Log("마을로 돌아갑니다");
-            playerMove.StartTile = false;
+            _movePlayerParty.StartTile = false;
             return;
         }
-        dungeons[currentStage + 1].SetActive(false);
-        dungeons[currentStage].SetActive(true);
+        thisDungeons[currentStage + 1].SetActive(false);
+        thisDungeons[currentStage].SetActive(true);
         PlayerPositionInitialize();
         // nextStage = currentStage;
         // currentStage = postStage;

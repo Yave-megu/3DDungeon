@@ -13,6 +13,11 @@ TagManager:
   - EndTile
   - Floor
   - StartTile
+  - MonsterTile
+  - TrapTile
+  - RewardTile
+  - GatheringTile
+  - MiningTile
   layers:
   - Default
   - TransparentFX
@@ -20,7 +25,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Player
   - 
   - 
   - 

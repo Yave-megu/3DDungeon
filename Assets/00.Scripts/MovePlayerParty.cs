@@ -1,26 +1,28 @@
 using System.Collections;
 using UnityEngine;
 
-public class PlayerMove : MonoBehaviour
+public class MovePlayerParty : MonoBehaviour
 {
     public float moveDistance = 4f; // 한 번 이동할 거리
     public float moveSpeed = 5f; // 이동 속도
     public float rotationSpeed = 300f; // 회전 속도 (각도/초)
     public float raycastDistance = 2.5f; //탐색 범위
 
+    private GameObject _playerParty;
     private bool isMoving; // 현재 움직이는 중인지 확인
+
     private bool isRotating; // 현재 회전 중인지 확인
     public bool EndTile { get; set; }
     public bool StartTile { get; set; }
-    public int StepCount { get; set; }
+    public int Stamina { get; set; }
+    public int MaxStamina { get; set; }
     private void Start()
     {
-        var pos = GameObject.FindGameObjectWithTag("StartTile").transform.position;
-        pos.y += 2;
-        transform.position = pos;
+        _playerParty = PlayerParty.Instance;
         EndTile = false;
         StartTile = false;
-        Debug.Log("Start: " + transform.position);
+        MaxStamina = PlayerParty.MaxStamina;
+        Stamina = MaxStamina;
     }
 
     private void Update()
@@ -32,7 +34,28 @@ public class PlayerMove : MonoBehaviour
             {
                 var forward = transform.forward; // 현재 캐릭터의 전방
                 StartCoroutine(Move(forward));
-                StepCount++;
+                if (CheckOnBlock().collider.CompareTag("TrapTile"))
+                {
+                    Stamina -= 20;
+                }
+                else if (CheckOnBlock().collider.CompareTag("MonsterTile"))
+                {
+                    Stamina -= 30;
+                }
+                else if (CheckOnBlock().collider.CompareTag("RewardTile"))
+                {
+                    Stamina += 20;
+                    if (Stamina > MaxStamina)
+                    {
+                        Stamina = MaxStamina;
+                    }
+                }
+                else
+                {
+                    Stamina--;
+                }
+                PlayerParty.Stamina = Stamina;
+
             }
 
         }
@@ -68,6 +91,8 @@ public class PlayerMove : MonoBehaviour
         }
 
     }
+
+
 
     // 일정 거리 이동
     private IEnumerator Move(Vector3 direction)
