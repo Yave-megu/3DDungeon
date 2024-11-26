@@ -1017,7 +1017,6 @@ GameObject:
   - component: {fileID: 7744178443820028883}
   - component: {fileID: 8836172948132080640}
   - component: {fileID: 1429208013502394409}
-  - component: {fileID: 6212206983379882871}
   - component: {fileID: 2974478741409876410}
   m_Layer: 0
   m_Name: Character(Clone)
@@ -1094,22 +1093,6 @@ CapsuleCollider:
   m_Height: 2.7587833
   m_Direction: 1
   m_Center: {x: 0, y: 0.83429956, z: -0.2515564}
---- !u!114 &6212206983379882871
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6066768643959130756}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e3157d08a72e4caba52fc3e77e7dd3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveDistance: 4
-  moveSpeed: 3
-  rotationSpeed: 300
-  raycastDistance: 4.5
 --- !u!54 &2974478741409876410
 Rigidbody:
   m_ObjectHideFlags: 0
