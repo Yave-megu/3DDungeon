@@ -18,6 +18,8 @@ TagManager:
   - RewardTile
   - GatheringTile
   - MiningTile
+  - Slime
+  - Trap1
   layers:
   - Default
   - TransparentFX
