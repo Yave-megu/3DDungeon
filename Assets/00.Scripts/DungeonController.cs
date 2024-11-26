@@ -1,16 +1,25 @@
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class DungeonController : MonoBehaviour
 {
 
     public GameObject[] dungeons;
-    public GameObject player;
+
+    [FormerlySerializedAs("PlayerPArty")]
+    [FormerlySerializedAs("player")]
+    public GameObject PlayerParty;
+
     public TMP_Text textMesh;
+
     public GameObject resultPopup;
+    // public GameObject PlayerParty;
 
     private MovePlayerParty _movePlayerParty;
+    private PlayerParty _playerParty;
+
     private int currentStage;
 
     private int postStage;
@@ -21,6 +30,8 @@ public class DungeonController : MonoBehaviour
     public void Awake()
     {
         Instance = gameObject;
+        PlayerParty = Instantiate(PlayerParty);
+
         thisDungeons = new GameObject[dungeons.Length];
         for (int i = 0; i < dungeons.Length; i++)
         {
@@ -40,7 +51,8 @@ public class DungeonController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
-        _movePlayerParty = player.GetComponent<MovePlayerParty>();
+        _movePlayerParty = PlayerParty.GetComponent<MovePlayerParty>();
+        _playerParty = PlayerParty.GetComponent<PlayerParty>();
         textMesh.text = "Total Step: " + _movePlayerParty.Stamina;
         PlayerPositionInitialize();
 
@@ -65,7 +77,7 @@ public class DungeonController : MonoBehaviour
         {
             var inintPos = GameObject.FindWithTag("StartTile").transform.position;
             inintPos.y += 2;
-            player.transform.position = inintPos;
+            PlayerParty.transform.position = inintPos;
         }
 
 
@@ -73,13 +85,13 @@ public class DungeonController : MonoBehaviour
         {
             var upInitPos = GameObject.FindWithTag("StartTile").transform.position;
             upInitPos.y += 2;
-            player.transform.position = upInitPos;
+            PlayerParty.transform.position = upInitPos;
         }
         if (_movePlayerParty.StartTile)
         {
             var downInitPos = GameObject.FindWithTag("EndTile").transform.position;
             downInitPos.y += 2;
-            player.transform.position = downInitPos;
+            PlayerParty.transform.position = downInitPos;
         }
         _movePlayerParty.EndTile = false;
         _movePlayerParty.StartTile = false;

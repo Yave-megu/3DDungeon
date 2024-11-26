@@ -8,7 +8,7 @@ public class MovePlayerParty : MonoBehaviour
     public float rotationSpeed = 300f; // 회전 속도 (각도/초)
     public float raycastDistance = 2.5f; //탐색 범위
 
-    private GameObject _playerParty;
+    private PlayerParty _playerParty;
     private bool isMoving; // 현재 움직이는 중인지 확인
 
     private bool isRotating; // 현재 회전 중인지 확인
@@ -16,12 +16,16 @@ public class MovePlayerParty : MonoBehaviour
     public bool StartTile { get; set; }
     public int Stamina { get; set; }
     public int MaxStamina { get; set; }
+
+    private void Awake() { }
+
     private void Start()
     {
-        _playerParty = PlayerParty.Instance;
+
+        _playerParty = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerParty>();
         EndTile = false;
         StartTile = false;
-        MaxStamina = PlayerParty.MaxStamina;
+        MaxStamina = _playerParty.MaxStamina;
         Stamina = MaxStamina;
     }
 
@@ -54,7 +58,7 @@ public class MovePlayerParty : MonoBehaviour
                 {
                     Stamina--;
                 }
-                PlayerParty.Stamina = Stamina;
+                _playerParty.Stamina = Stamina;
 
             }
 

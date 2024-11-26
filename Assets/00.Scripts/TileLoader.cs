@@ -17,6 +17,8 @@ public class MazeCell
     public bool is_start;
     public bool is_end;
     public bool is_wall;
+    public bool is_gathering;
+    public bool is_mining;
 }
 
 [Serializable]
@@ -37,17 +39,20 @@ public class TileLoader : MonoBehaviour
     public GameObject rewardPrefab; // 보상 프리팹
     public GameObject trapPrefab; // 함정 프리팹
     public GameObject startPrefab; // 시작점 프리팹
-
     public GameObject endPrefab; // 도착점 프리팹
 
+    public GameObject gatheringPrefab; //채집 프리팹
+    public GameObject miningPrefab; //채광 프리팹
+
     public Grid grid;
+
     public Tilemap tilemap;
 
-    [SerializeField]
-    private TileBase floorTileBase;
 
     private Tile EndTile;
     private Tile floorTile;
+    private Tile gatheringTile;
+    private Tile miningTile;
     private Tile MonsterTile;
     private Tile RewardTile;
     private Tile StartTile;
@@ -64,6 +69,8 @@ public class TileLoader : MonoBehaviour
         MonsterTile = ScriptableObject.CreateInstance<Tile>();
         RewardTile = ScriptableObject.CreateInstance<Tile>();
         TrapTile = ScriptableObject.CreateInstance<Tile>();
+        gatheringTile = ScriptableObject.CreateInstance<Tile>();
+        miningTile = ScriptableObject.CreateInstance<Tile>();
 
         wallPrefab.gameObject.transform.localScale = new Vector3(4, 16, 4);
         floorPrefab.gameObject.transform.localScale = new Vector3(4, 4, 4);
@@ -72,6 +79,8 @@ public class TileLoader : MonoBehaviour
         monsterPrefab.gameObject.transform.localScale = new Vector3(4, 4, 4);
         rewardPrefab.gameObject.transform.localScale = new Vector3(4, 4, 4);
         trapPrefab.gameObject.transform.localScale = new Vector3(4, 4, 4);
+        gatheringPrefab.gameObject.transform.localScale = new Vector3(4, 4, 4);
+        miningPrefab.gameObject.transform.localScale = new Vector3(4, 4, 4);
 
         floorTile.gameObject = floorPrefab;
         wallTile.gameObject = wallPrefab;
@@ -80,6 +89,8 @@ public class TileLoader : MonoBehaviour
         MonsterTile.gameObject = monsterPrefab;
         RewardTile.gameObject = rewardPrefab;
         TrapTile.gameObject = trapPrefab;
+        gatheringTile.gameObject = gatheringPrefab;
+        miningTile.gameObject = miningPrefab;
 
         foreach (var mazeJsonFile in mazeJsonFiles)
         {
@@ -170,6 +181,14 @@ public class TileLoader : MonoBehaviour
                     if (cell.is_trap)
                     {
                         tilemap.SetTile(position, TrapTile);
+                    }
+                    if (cell.is_gathering)
+                    {
+                        tilemap.SetTile(position, gatheringTile);
+                    }
+                    if (cell.is_mining)
+                    {
+                        tilemap.SetTile(position, miningTile);
                     }
 
                     // 시작점과 도착점
